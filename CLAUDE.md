@@ -41,9 +41,12 @@ npm run preview      # 本地预览生产构建
 
 ### 后端 — Django 4.2（MyClassApi/）
 
-- **配置文件：** `MyClassApi/settings.py` — 默认使用 SQLite 数据库，DEBUG=True，尚未安装 DRF 或其他外部应用。
-- **URL 根路由：** `MyClassApi/urls.py` — 目前仅注册了 Django admin。
-- **Django 项目名**为 `MyClassApi`。运行 `manage.py` 时，`DJANGO_SETTINGS_MODULE` 指向 `MyClassApi.settings`。
+- **配置文件：** `config/settings.py` — MySQL 数据库、Redis 缓存、DRF + SimpleJWT 已集成。
+- **路由：** `config/urls.py`，API 统一挂载在 `/api/v1/` 下。
+  - `/api/v1/auth/` → `apps.users.urls`（注册、登录、token 刷新）
+  - `/admin/` → Django admin
+- **用户模型：** 自定义 `User`（继承 `AbstractUser`），`AUTH_USER_MODEL = "users.User"`，app 位于 `apps/users/`。
+- 运行 `manage.py` 时，`DJANGO_SETTINGS_MODULE` 指向 `config.settings`。
 
 ### 前端 — Vue 3（MyClassWeb/）
 
@@ -52,14 +55,17 @@ npm run preview      # 本地预览生产构建
 - **状态管理：** Pinia store 文件放在 `src/stores/`，每个业务概念一个文件。
 - **路径别名：** `@` 映射到 `src/`（在 `vite.config.js` 中配置）。
 
-## 计划引入的技术栈（逐步引入）
+## 技术栈状态
 
-以下技术将根据功能需求逐步引入：
-
-- **DRF（Django REST Framework）：** 用于构建 REST API 端点、序列化器、视图集。
-- **Redis + Celery：** 用于异步任务（邮件、视频处理）和缓存。
-- **Elasticsearch：** 用于课程搜索。
-- **MySQL：** 在需要持久化存储时替换 SQLite。
+| 技术 | 状态 | 用途 |
+|------|------|------|
+| Django 4.2 | ✅ 已集成 | Web 框架 |
+| DRF | ✅ 已集成 | REST API |
+| SimpleJWT | ✅ 已集成 | JWT 登录认证 |
+| MySQL 8.0 | ✅ 已集成 | 关系数据库 |
+| Redis | ✅ 已集成 | 缓存（后续 Celery broker） |
+| Celery | ⏳ 待引入 | 异步任务 |
+| Elasticsearch | ⏳ 待引入 | 课程搜索 |
 
 ## 约定
 
@@ -69,6 +75,22 @@ npm run preview      # 本地预览生产构建
 - 后端 API 路由统一使用 `/api/v1/` 命名空间。
 - 所有共享的前端状态（用户认证、课程数据等）使用 Pinia store 管理。
 - 语言：所有代码、注释、提交信息和文档使用中文。
+
+## 开发协作模式
+
+本项目采用"框架搭建 + TODO 标注"的教学开发模式：
+
+1. **Claude 负责：** 搭建技术框架、配置基础设施、定义接口规范、创建文件结构
+2. **用户负责：** 完成 TODO 标注的业务逻辑、字段验证、异常处理等核心代码
+
+开发新功能时，Claude 先创建完整的框架代码，在需要用户自己实现的位置用 `# TODO: ...` 注释标注，格式如下：
+
+```python
+# TODO: 添加手机号格式验证（正则匹配中国大陆手机号 1[3-9]\d{9}）
+# TODO: 添加密码强度验证（至少8位，包含字母和数字）
+```
+
+这些 TODO 是给用户的练习任务，帮助用户在实践中掌握各个技术栈。
 
 ## 文档维护
 
