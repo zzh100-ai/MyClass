@@ -1,0 +1,25 @@
+import api from '@/utils/api'
+
+export function getCourses(params) {
+  return api.get('/courses/', { params })
+}
+
+export function getCourse(id) {
+  return api.get(`/courses/${id}/`)
+}
+
+export function createCourse(data) {
+  return api.post('/courses/', data)
+}
+
+export function updateCourse(id, data) {
+  return api.put(`/courses/${id}/`, data)
+}
+
+export function deleteCourse(id) {
+  return api.delete(`/courses/${id}/`)
+}
+
+export function getCategories() {
+  return api.get('/categories/')
+}

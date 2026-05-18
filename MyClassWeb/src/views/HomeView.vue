@@ -1,7 +1,10 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import NavBar from '@/components/NavBar.vue'
 import PageFooter from '@/components/PageFooter.vue'
+
+const router = useRouter()
 
 const ready = ref(false)
 
@@ -45,7 +48,7 @@ const features = [
           体系化的课程设计、真实的项目实战、精准的在线评测<br />
           重新定义你的学习方式
         </p>
-        <button class="hero-cta">开始学习</button>
+        <button class="hero-cta" @click="router.push('/courses')">开始学习</button>
       </section>
 
       <!-- 右侧数据卡片 -->

@@ -19,6 +19,22 @@ const router = createRouter({
       name: 'Register',
       component: () => import('@/views/RegisterView.vue'),
     },
+    {
+      path: '/courses',
+      name: 'CourseList',
+      component: () => import('@/views/courses/CourseList.vue'),
+    },
+    {
+      path: '/courses/:id',
+      name: 'CourseDetail',
+      component: () => import('@/views/courses/CourseDetail.vue'),
+    },
+    {
+      path: '/cart',
+      name: 'Cart',
+      component: () => import('@/views/cart/CartPage.vue'),
+      meta: { requiresAuth: true },
+    },
   ],
 })
 

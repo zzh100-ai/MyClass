@@ -21,20 +21,11 @@
       "Bash(python3 *)",
       "Bash(npm install *)",
       "Bash(npm run *)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173/)"
-    ]
-  },
-  "hooks": {
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/stop-update-docs.sh",
-            "timeout": 10
-          }
-        ]
-      }
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173/)",
+      "Skill(planning-with-files:planning-with-files)",
+      "Bash(mkdir -p \".claude/hooks\")",
+      "Bash(cat)",
+      "Bash(chmod +x .claude/hooks/stop-update-docs.sh)"
     ]
   }
 }

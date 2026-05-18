@@ -28,6 +28,11 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     # 业务模块
     "apps.users.apps.UsersConfig",
+    "apps.courses.apps.CoursesConfig",
+    "apps.search.apps.SearchConfig",
+    "apps.cart.apps.CartConfig",
+
+
 ]
 
 MIDDLEWARE = [
@@ -82,6 +87,28 @@ CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0"),
+        "KEY_PREFIX": "",# 去掉前缀
+        "VERSION": 0,  # 去掉版本号
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "CONNECTION_POOL_KWARGS": {"max_connections": 50},
+        },
+    },
+    "courses": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.getenv("COURSES_REDIS_URL", "redis://127.0.0.1:6379/2"),
+        "KEY_PREFIX": "",# 去掉前缀
+        "VERSION": 0,  # 去掉版本号
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "CONNECTION_POOL_KWARGS": {"max_connections": 50},
+        },
+    },
+    "cart": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.getenv("COURSES_REDIS_URL", "redis://127.0.0.1:6379/2"),
+        "KEY_PREFIX": "",  # 去掉前缀
+        "VERSION": 0,  # 去掉版本号
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "CONNECTION_POOL_KWARGS": {"max_connections": 50},
@@ -102,6 +129,8 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -136,3 +165,23 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
 ]
 CORS_ALLOW_CREDENTIALS = True
+
+# 数据库查询日志（仅开发环境）
+if DEBUG:
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "handlers": {
+            "console": {
+                "level": "DEBUG",
+                "class": "logging.StreamHandler",
+            },
+        },
+        "loggers": {
+            # Django 的 SQL 记录器，输出所有数据库查询
+            "django.db.backends": {
+                "handlers": ["console"],
+                "level": "DEBUG",
+            },
+        },
+    }
