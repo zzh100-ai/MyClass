@@ -9,6 +9,8 @@ urlpatterns = [
     path("api/v1/courses/", include("apps.courses.urls")),
     path("api/v1/", include("apps.search.urls")),
     path("api/v1/", include("apps.cart.urls")),
+    path("api/v1/", include("apps.order.urls")),
+    path("api/v1/", include("apps.coupon.urls")),
 ]
 
 # 开发环境下提供媒体文件访问

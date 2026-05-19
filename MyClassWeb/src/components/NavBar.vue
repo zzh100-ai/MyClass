@@ -30,6 +30,9 @@ function handleLogout() {
           购物车
           <span v-if="cartStore.count" class="cart-badge">{{ cartStore.count }}</span>
         </router-link>
+        <router-link to="/orders" class="nav-link">我的订单</router-link>
+        <router-link to="/coupons" class="nav-link">优惠券</router-link>
+        <router-link to="/points" class="nav-link">积分</router-link>
       </div>
     </div>
     <div class="nav-right">

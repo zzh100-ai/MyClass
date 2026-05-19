@@ -34,7 +34,6 @@ async function confirmClear() {
 }
 
 function goCheckout() {
-  // TODO: 后续实现结算页
   router.push('/checkout')
 }
 </script>

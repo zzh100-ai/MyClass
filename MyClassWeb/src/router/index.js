@@ -35,6 +35,36 @@ const router = createRouter({
       component: () => import('@/views/cart/CartPage.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/checkout',
+      name: 'Checkout',
+      component: () => import('@/views/order/CheckoutPage.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/orders',
+      name: 'OrderList',
+      component: () => import('@/views/order/OrderList.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/orders/:id',
+      name: 'OrderDetail',
+      component: () => import('@/views/order/OrderDetail.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/coupons',
+      name: 'CouponList',
+      component: () => import('@/views/coupon/CouponList.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/points',
+      name: 'Points',
+      component: () => import('@/views/points/PointsPage.vue'),
+      meta: { requiresAuth: true },
+    },
   ],
 })
 

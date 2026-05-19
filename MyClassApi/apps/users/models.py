@@ -6,6 +6,7 @@ class User(AbstractUser):
     """自定义用户模型，扩展手机号字段"""
 
     mobile = models.CharField(max_length=11, unique=True, blank=True, null=True, verbose_name="手机号")
+    points = models.IntegerField(default=0, verbose_name="积分余额")
 
     class Meta:
         db_table = "users"

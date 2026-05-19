@@ -16,6 +16,7 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
 # Application definition
 INSTALLED_APPS = [
+    "simpleui",  # 美化 Django admin
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -31,8 +32,8 @@ INSTALLED_APPS = [
     "apps.courses.apps.CoursesConfig",
     "apps.search.apps.SearchConfig",
     "apps.cart.apps.CartConfig",
-
-
+    "apps.order.apps.OrderConfig",
+    "apps.coupon.apps.CouponConfig",
 ]
 
 MIDDLEWARE = [
@@ -185,3 +186,34 @@ if DEBUG:
             },
         },
     }
+
+
+# -------------------- django-simpleui 配置 --------------------
+SIMPLEUI_LOGO = "https://cdn.jsdelivr.net/npm/@simpleui/static@latest/logo.svg"
+SIMPLEUI_HOME_TITLE = "MyClass 管理后台"
+SIMPLEUI_HOME_ICON = "el-icon-s-platform"
+SIMPLEUI_DEFAULT_THEME = "admin.lte.css"
+SIMPLEUI_ANALYSIS = False
+
+SIMPLEUI_CONFIG = {
+    "system_keep": False,
+    "menu_display": ["认证与授权", "用户管理", "课程管理", "优惠券管理", "订单管理"],
+    "menus": [
+        {"app": "users", "name": "认证与授权", "icon": "fas fa-shield-alt", "models": [
+            {"name": "用户列表", "icon": "fas fa-user", "url": "/admin/users/user/"},
+            {"name": "用户组", "icon": "fas fa-users", "url": "/admin/auth/group/"},
+        ]},
+        {"app": "courses", "name": "课程管理", "icon": "fas fa-book", "models": [
+            {"name": "课程列表", "icon": "fas fa-video", "url": "/admin/courses/course/"},
+            {"name": "课程分类", "icon": "fas fa-tags", "url": "/admin/courses/category/"},
+            {"name": "章节管理", "icon": "fas fa-list", "url": "/admin/courses/chapter/"},
+            {"name": "课时管理", "icon": "fas fa-play-circle", "url": "/admin/courses/lesson/"},
+        ]},
+        {"app": "coupon", "name": "优惠券管理", "icon": "fas fa-gift", "models": [
+            {"name": "优惠券模板", "icon": "fas fa-ticket-alt", "url": "/admin/coupon/coupon/"},
+            {"name": "用户优惠券", "icon": "fas fa-hand-holding-heart", "url": "/admin/coupon/usercoupon/"},
+            {"name": "积分流水", "icon": "fas fa-coins", "url": "/admin/coupon/pointstransaction/"},
+        ]},
+        {"app": "order", "name": "订单管理", "icon": "fas fa-receipt", "url": "/admin/order/order/"}
+    ],
+}

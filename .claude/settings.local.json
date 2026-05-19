@@ -16,8 +16,6 @@
       "Bash(curl -s -X POST http://127.0.0.1:8000/api/v1/auth/register/ -H \"Content-Type: application/json\" -d '{\"username\":\"testuser\",\"password\":\"123456\",\"email\":\"test@test.com\",\"mobile\":\"13800138000\"}')",
       "Bash(curl *)",
       "Skill(update-config)",
-      "Bash(chmod +x /d/code/python/MyClass/.claude/hooks/stop-update-docs.sh)",
-      "Bash(bash /d/code/python/MyClass/.claude/hooks/stop-update-docs.sh)",
       "Bash(python3 *)",
       "Bash(npm install *)",
       "Bash(npm run *)",
@@ -25,7 +23,36 @@
       "Skill(planning-with-files:planning-with-files)",
       "Bash(mkdir -p \".claude/hooks\")",
       "Bash(cat)",
-      "Bash(chmod +x .claude/hooks/stop-update-docs.sh)"
+      "Bash(chmod +x .claude/hooks/stop-update-docs.sh)",
+      "Bash(DJANGO_SETTINGS_MODULE=config.settings python -c ' *)",
+      "Bash(git add *)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Write|Edit|Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/read-task-plan.py",
+            "timeout": 5,
+            "statusMessage": "读取任务计划..."
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/Users/zhangziheng/.claude/plugins/cache/planning-with-files/planning-with-files/2.35.0/scripts/session-catchup.py \"$PWD\"",
+            "timeout": 10,
+            "statusMessage": "恢复上次会话上下文..."
+          }
+        ]
+      }
     ]
   }
 }

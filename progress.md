@@ -29,3 +29,33 @@
 - 创建 Redis Hash 函数框架（redis_cart.py）
 - 创建购物车 API 框架（CartViewSet + Serializer）
 - TODO 标注核心 CRUD 逻辑，由用户实现
+
+## 会话 4 (2026-05-19)
+- **优惠券模块（apps/coupon/）** — 完整实现
+  - 数据模型：Coupon（优惠券模板）、UserCoupon（用户领取记录）、PointsTransaction（积分流水）
+  - 定价引擎（pricing.py）：活动-优惠类型-公式三层抽象，支持满减/折扣/积分抵扣组合
+  - API：CouponViewSet（管理员CRUD）、UserCouponViewSet（用户领取+列表）、PointsViewSet（余额+流水）
+  - 前端：CouponList.vue、coupon store、coupon API
+- **订单模块（apps/order/）** — 完整实现
+  - 数据模型：Order（含订单号生成、状态字段）、OrderItem（价格快照）
+  - 创建订单：集成了优惠券/积分计算、清空购物车
+  - 模拟支付：pay 接口 + notify 回调 + _handle_payment_success 统一处理
+  - 支付成功处理：扣减积分、标记优惠券已用、清空购物车
+  - 前端：CheckoutPage.vue、OrderList.vue、OrderDetail.vue、order store
+- **用户模型扩展：** 添加 points 积分字段，迁移文件已生成
+- **前端路由与导航：** 所有页面路由配置完成，NavBar 链接完善
+- **文档：** cart.md、coupon.md、order.md API 文档编写完成
+
+## 总体进度（2026-05-19）
+
+| 模块 | 状态 | 说明 |
+|------|------|------|
+| 阶段1 基础架构 | ✅ 完成 | Django + DRF + JWT + Redis + MySQL |
+| 阶段2 课程模块 | ✅ 完成 | 模型/序列化器/视图/权限 |
+| 阶段3 ES搜索 | ⚠️ 框架 | 需安装 ES 服务 + 补全 TODO |
+| 阶段4 购物车 | ✅ 完成 | Redis Hash + API + 前端 |
+| 阶段5 优惠券/积分 | ✅ 完成 | 模型/定价引擎/API/前端 |
+| 阶段6 订单/支付 | ✅ 完成 | 订单/支付/回调/前端 |
+| 阶段7 Celery | ⏸️ 待开始 | — |
+| 阶段8 前端集成 | ✅ 完成 | 随模块同步开发 |
+| 阶段9 部署 | ⏸️ 待开始 | — |
