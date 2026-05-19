@@ -25,7 +25,11 @@
       "Bash(cat)",
       "Bash(chmod +x .claude/hooks/stop-update-docs.sh)",
       "Bash(DJANGO_SETTINGS_MODULE=config.settings python -c ' *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "mcp__ide__getDiagnostics",
+      "Bash(DJANGO_SETTINGS_MODULE=config.settings python *)",
+      "Bash(timeout 5 celery -A config flower --port=5555)",
+      "Bash(celery -A config flower --port=5555)"
     ]
   },
   "hooks": {

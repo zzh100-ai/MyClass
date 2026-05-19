@@ -6,6 +6,7 @@
 
 - [2026-05-12 Django 后端配置](2026-05-12-django-config.md) — 项目结构规范化、MySQL/Redis 配置、load_dotenv 使用技巧
 - [2026-05-12 SimpleJWT 详解](2026-05-12-simplejwt-guide.md) — JWT 结构、Token 签发验证、自定义载荷、自定义返回格式、黑白名单、开发流程
+- [2026-05-19 Celery 异步任务入门](2026-05-19-celery-guide.md) — Celery 架构、配置、定义/调度任务、Worker 运行、定时任务、Flower 监控、常见问题
 - 数据库笔记
 - Django 笔记
 - DRF 笔记

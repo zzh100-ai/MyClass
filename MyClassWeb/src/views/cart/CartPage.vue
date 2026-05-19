@@ -20,8 +20,13 @@ const totalPrice = computed(() => {
     .toFixed(2)
 })
 
-function handleRemove(courseId) {
-  cartStore.removeCourse(courseId)
+async function handleRemove(courseId) {
+  try {
+    await cartStore.removeCourse(courseId)
+    ElMessage.success('已移除')
+  } catch (e) {
+    ElMessage.error(e.message || '移除失败')
+  }
 }
 
 function handleClear() {

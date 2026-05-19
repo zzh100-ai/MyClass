@@ -30,7 +30,7 @@
 ### Redis & Celery
 
 - Redis 基础
-- Celery 异步任务
+- [Celery 异步任务](https://github.com/zhangziheng/MyClass/blob/main/doc/notes/2026-05-19-celery-guide.md) ✅ 已完成（参见学习笔记）
 
 ### Elasticsearch
 

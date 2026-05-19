@@ -217,3 +217,14 @@ SIMPLEUI_CONFIG = {
         {"app": "order", "name": "订单管理", "icon": "fas fa-receipt", "url": "/admin/order/order/"}
     ],
 }
+
+
+# -------------------- Celery 异步任务配置 --------------------
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://127.0.0.1:6379/2")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND", "redis://127.0.0.1:6379/2")
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "Asia/Shanghai"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60  # 单个任务最大执行时间（秒）

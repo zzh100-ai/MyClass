@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useCartStore } from '@/stores/cart'
@@ -8,15 +8,38 @@ const router = useRouter()
 const authStore = useAuthStore()
 const cartStore = useCartStore()
 
+const showMenu = ref(false)
+const menuRef = ref(null)
+
 onMounted(() => {
   if (authStore.isAuthenticated) {
     cartStore.fetchCount()
   }
+  document.addEventListener('click', handleClickOutside)
 })
 
-function handleLogout() {
-  authStore.logout()
-  router.push('/login')
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+
+function handleClickOutside(e) {
+  if (menuRef.value && !menuRef.value.contains(e.target)) {
+    showMenu.value = false
+  }
+}
+
+function toggleMenu() {
+  showMenu.value = !showMenu.value
+}
+
+function goTo(path) {
+  showMenu.value = false
+  if (path === 'logout') {
+    authStore.logout()
+    router.push('/login')
+  } else {
+    router.push(path)
+  }
 }
 </script>
 
@@ -30,14 +53,21 @@ function handleLogout() {
           购物车
           <span v-if="cartStore.count" class="cart-badge">{{ cartStore.count }}</span>
         </router-link>
-        <router-link to="/orders" class="nav-link">我的订单</router-link>
-        <router-link to="/coupons" class="nav-link">优惠券</router-link>
-        <router-link to="/points" class="nav-link">积分</router-link>
       </div>
     </div>
-    <div class="nav-right">
-      <span class="nav-user">{{ authStore.user?.username }}</span>
-      <button class="nav-logout" @click="handleLogout">退出</button>
+    <div class="nav-right" ref="menuRef">
+      <span class="nav-user-dropdown" @click="toggleMenu">
+        {{ authStore.user?.username || '用户' }}
+      </span>
+      <transition name="fade">
+        <div v-if="showMenu" class="dropdown-menu">
+          <div class="dropdown-item" @click="goTo('/orders')">我的订单</div>
+          <div class="dropdown-item" @click="goTo('/coupons')">优惠券</div>
+          <div class="dropdown-item" @click="goTo('/points')">积分</div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item logout" @click="goTo('logout')">退出登录</div>
+        </div>
+      </transition>
     </div>
   </nav>
 </template>
@@ -80,7 +110,6 @@ function handleLogout() {
   font-size: 0.9rem;
   letter-spacing: 1px;
   transition: color 0.2s;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   position: relative;
 }
 
@@ -111,32 +140,76 @@ function handleLogout() {
 }
 
 .nav-right {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 20px;
 }
 
-.nav-user {
+.nav-user-dropdown {
+  color: rgba(255, 255, 255, 0.72);
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.72);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  cursor: pointer;
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  transition: all 0.2s;
+  letter-spacing: 1px;
+  user-select: none;
 }
 
-.nav-logout {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.72);
-  padding: 6px 16px;
-  border-radius: 4px;
-  font-size: 0.8rem;
+.nav-user-dropdown:hover {
+  color: #e94560;
+  border-color: #e94560;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 140px;
+  background: #1e2a4a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+.dropdown-item {
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
   cursor: pointer;
-  transition: all 0.2s;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  transition: all 0.15s;
   letter-spacing: 1px;
 }
 
-.nav-logout:hover {
+.dropdown-item:hover {
+  background: rgba(233, 69, 96, 0.12);
   color: #e94560;
-  border-color: #e94560;
+}
+
+.dropdown-item.logout {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.dropdown-item.logout:hover {
+  color: #e94560;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 4px 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
 }
 </style>

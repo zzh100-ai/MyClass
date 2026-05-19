@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
 import { useOrderStore } from '@/stores/order'
 import { useCouponStore } from '@/stores/coupon'
+import { ElMessage } from 'element-plus'
 import NavBar from '@/components/NavBar.vue'
 import PageFooter from '@/components/PageFooter.vue'
 
@@ -13,8 +14,8 @@ const orderStore = useOrderStore()
 const couponStore = useCouponStore()
 
 const submitting = ref(false)
-const errorMsg = ref('')
 const selectedCouponId = ref(null)
+const submitError = ref('')
 const pointsToUse = ref(0)
 
 onMounted(async () => {
@@ -44,7 +45,7 @@ const maxPoints = computed(() => {
 async function handleSubmit() {
   if (cartStore.items.length === 0) return
   submitting.value = true
-  errorMsg.value = ''
+  submitError.value = ''
 
   try {
     const courseIds = cartStore.items.map(c => c.id)
@@ -56,7 +57,9 @@ async function handleSubmit() {
     cartStore.count = 0
     router.push(`/orders/${order.id}`)
   } catch (e) {
-    errorMsg.value = e.message || '创建订单失败'
+    const msg = e.message || '创建订单失败'
+    submitError.value = msg
+    ElMessage.error(msg)
   } finally {
     submitting.value = false
   }
@@ -68,6 +71,9 @@ async function handleSubmit() {
     <NavBar />
     <main class="main-content">
       <h1 class="page-title">确认订单</h1>
+
+      <!-- 错误提示 -->
+      <p v-if="submitError" class="error-msg">{{ submitError }}</p>
 
       <div v-if="cartStore.loading" class="state-msg">加载中...</div>
       <div v-else-if="cartStore.items.length === 0" class="state-msg">
@@ -97,8 +103,11 @@ async function handleSubmit() {
         <!-- 优惠券 -->
         <div class="section">
           <h3 class="section-title">优惠券</h3>
-          <div v-if="usableCoupons.length === 0" class="no-data">暂无可用优惠券</div>
-          <div v-else class="coupon-options">
+          <div class="coupon-options">
+            <label class="coupon-option" :class="{ selected: selectedCouponId === null }">
+              <input type="radio" :value="null" v-model="selectedCouponId" />
+              <span class="coupon-label">不使用优惠券</span>
+            </label>
             <label v-for="uc in usableCoupons" :key="uc.id" class="coupon-option"
               :class="{ selected: selectedCouponId === uc.id }">
               <input type="radio" :value="uc.id" v-model="selectedCouponId" />
@@ -134,7 +143,6 @@ async function handleSubmit() {
           </button>
         </div>
 
-        <p v-if="errorMsg" class="error-msg">{{ errorMsg }}</p>
       </template>
     </main>
     <PageFooter />
@@ -188,5 +196,5 @@ async function handleSubmit() {
 .submit-btn { background: #e94560; border: none; color: #fff; padding: 12px 40px; border-radius: 4px; font-size: 1rem; cursor: pointer; letter-spacing: 1px; transition: background 0.2s; }
 .submit-btn:hover:not(:disabled) { background: #d63850; }
 .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.error-msg { text-align: right; color: #e94560; font-size: 0.85rem; margin-top: 12px; }
+.error-msg { text-align: center; color: #e94560; font-size: 0.85rem; margin-top: 16px; padding: 10px; background: rgba(233,69,96,0.1); border-radius: 4px; }
 </style>

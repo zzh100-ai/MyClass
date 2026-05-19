@@ -3,6 +3,7 @@ import { onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useOrderStore } from '@/stores/order'
 import NavBar from '@/components/NavBar.vue'
+import { ElMessage } from 'element-plus'
 import PageFooter from '@/components/PageFooter.vue'
 
 const route = useRoute()
@@ -19,9 +20,9 @@ onMounted(() => {
 async function handlePay() {
   try {
     await orderStore.payOrder(order.value.id)
-    alert('支付成功！')
+    ElMessage.success('支付成功！')
   } catch (e) {
-    alert(e.message || '支付失败')
+    ElMessage.error(e.message || '支付失败')
   }
 }
 

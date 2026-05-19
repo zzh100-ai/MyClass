@@ -32,7 +32,21 @@ service.interceptors.response.use(
     }
 
     const { status, data } = response
-    const msg = data?.msg || data?.detail || '请求失败'
+    // 提取错误信息
+    let msg = ''
+    if (data) {
+      if (typeof data === 'string') {
+        msg = data
+      } else if (data.msg || data.detail) {
+        msg = data.msg || data.detail
+      } else if (Array.isArray(data)) {
+        msg = data[0] || ''
+      } else if (typeof data === 'object') {
+        const firstErr = Object.values(data).find(v => Array.isArray(v) && v.length > 0)
+        if (firstErr) msg = firstErr[0]
+      }
+    }
+    msg = msg || '请求失败'
 
     // 401 且非刷新请求本身 → 尝试用 refresh token 刷新
     if (status === 401 && !config.url?.includes('/auth/refresh/')) {

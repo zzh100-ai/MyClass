@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useCourseStore } from '@/stores/courses'
 import { useAuthStore } from '@/stores/auth'
 import { useCartStore } from '@/stores/cart'
+import { ElMessage } from 'element-plus'
 import NavBar from '@/components/NavBar.vue'
 import PageFooter from '@/components/PageFooter.vue'
 
@@ -22,9 +23,9 @@ async function addToCart() {
   }
   try {
     await cartStore.addCourse(course.value.id)
-    alert('已添加到购物车')
+    ElMessage.success('已添加到购物车')
   } catch (e) {
-    alert(e.message || '添加失败')
+    ElMessage.error(e.message || '添加失败')
   }
 }
 

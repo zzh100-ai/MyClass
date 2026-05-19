@@ -19,8 +19,14 @@ from apps.courses.models import Course
 from apps.cart.redis_cart import remove_course
 from django.utils.timezone import now
 from django.core.cache import caches
+from django.db import transaction
 from ..coupon.models import UserCoupon, PointsTransaction
 from apps.coupon.pricing import calculate_final_price, POINTS_RATIO
+from .tasks import cancel_expired_order
+
+# 订单超时时间（秒）：30分钟
+# ORDER_TIMEOUT = 30 * 60
+ORDER_TIMEOUT = 60 # 测试用60秒
 
 
 class OrderViewSet(viewsets.ReadOnlyModelViewSet):
@@ -106,10 +112,17 @@ class OrderViewSet(viewsets.ReadOnlyModelViewSet):
         OrderItem.objects.bulk_create(items)
 
         # 从购物车移除已购买的课程
-
         cart_redis = caches['cart'].client.get_client()
         for cid in course_ids:
             remove_course(cart_redis, request.user.id, cid)
+
+        # 调度超时取消任务（30分钟后执行）
+        transaction.on_commit(lambda:
+            cancel_expired_order.apply_async(
+                args=[order.id],
+                countdown=ORDER_TIMEOUT,
+                task_id=f'cancel_order_{order.id}'
+            ))
 
         return Response(OrderSerializer(order).data, status=status.HTTP_201_CREATED)
 
@@ -221,3 +234,6 @@ def _handle_payment_success(order):
         order.user_coupon.status = UserCoupon.Status.USED
         order.user_coupon.used_at = now()
         order.user_coupon.save(update_fields=['status', 'used_at'])
+
+    # 支付成功，撤销超时取消任务
+    cancel_expired_order.AsyncResult(f'cancel_order_{order.id}').revoke()
